@@ -1,0 +1,35 @@
+version: '3'
+services:
+  app:
+    container_name: movie_app
+    build: .
+    ports: 
+      - 5000:5000 
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    networks:
+      - movie_app
+
+  postgres:
+    image: postgres:latest
+    container_name: postgresDB
+    environment:
+      - POSTGRES_USER=${DB_USER}  
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST} 
+    ports:
+      - '5432:5432'
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - movie_app
+
+volumes:
+  api:
+  database_postgres:  
+
+networks:
+  movie_app:
+    driver: bridge 
